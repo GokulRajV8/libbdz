@@ -6,7 +6,6 @@ import os
 
 from PIL import Image
 from PIL import ImageFile
-from PIL import UnidentifiedImageError
 
 
 def __get_final_dimensions(
@@ -54,20 +53,9 @@ def process(
     is_vertical: bool,
     is_jpg: bool = False,
     quality: int = 100,
-) -> str:
-    # preliminary checks
-    if not os.path.isdir(dst_dir):
-        return "Destination directory does not exist"
-    if os.path.isfile(os.path.join(dst_dir, dst_image)):
-        return "Destination file already exists"
-
+):
     # loading images
-    try:
-        images = [Image.open(src_image) for src_image in src_images]
-    except UnidentifiedImageError:
-        return "Given file does not look like an image"
-    except FileNotFoundError:
-        return "Given file does not exist in the given directory"
+    images = [Image.open(src_image) for src_image in src_images]
 
     # stitching images
     width, height = __get_final_dimensions(images, is_vertical)
@@ -82,4 +70,3 @@ def process(
         final_image.save(
             os.path.join(dst_dir, dst_image) + ".png", format="PNG", quality=quality
         )
-    return "Image generated successfully"
