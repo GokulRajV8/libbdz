@@ -7,25 +7,24 @@ import os
 import re
 
 
-def __prepare_pattern_matchers(exclude_patterns_file: str) -> list[re.Pattern]:
-    with open(exclude_patterns_file, "r", encoding="utf-8") as e_file:
-        re_matchers = []
-        for pattern in e_file:
-            if pattern.startswith("#") or pattern == "\n":
-                continue
-            elif pattern.endswith("\n"):
-                pattern = pattern[:-1]
+def __prepare_pattern_matchers(exclude_patterns: list[str]) -> list[re.Pattern]:
+    re_matchers = []
+    for pattern in exclude_patterns:
+        if pattern.startswith("#") or pattern == "\n":
+            continue
+        elif pattern.endswith("\n"):
+            pattern = pattern[:-1]
 
-            for character in [".", "^", "$", "+", "(", ")", "[", "]", "{", "}"]:
-                pattern = pattern.replace(character, "\\" + character)
+        for character in [".", "^", "$", "+", "(", ")", "[", "]", "{", "}"]:
+            pattern = pattern.replace(character, "\\" + character)
 
-            if not pattern.startswith("/"):
-                pattern = "*/" + pattern
-            if pattern.endswith("/"):
-                pattern = pattern + "*"
-            re_matchers.append(re.compile(pattern.replace("*", "(.*?)")))
+        if not pattern.startswith("/"):
+            pattern = "*/" + pattern
+        if pattern.endswith("/"):
+            pattern = pattern + "*"
+        re_matchers.append(re.compile(pattern.replace("*", "(.*?)")))
 
-        return re_matchers
+    return re_matchers
 
 
 def __match_patterns(re_matchers: list[re.Pattern], input_str: str) -> bool:
@@ -110,9 +109,9 @@ def process(root: str, exclude_patterns_file: str) -> list[list[str]]:
         if orig_size < 1024:
             size = str(orig_size) + " B"
         elif orig_size < 1024 * 1024:
-            size = "%.3f" % (orig_size / 1024.0) + " KB"
+            size = "%.2f" % (orig_size / 1024.0) + " KB"
         else:
-            size = "%.3f" % (orig_size / (1024.0 * 1024.0)) + " MB"
+            size = "%.2f" % (orig_size / (1024.0 * 1024.0)) + " MB"
         result.append([file_type, count, size, lines])
     result.sort(key=lambda x: x[0])
 
