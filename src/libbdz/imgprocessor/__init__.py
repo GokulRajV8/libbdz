@@ -1,0 +1,3 @@
+"""
+Module to process images
+"""

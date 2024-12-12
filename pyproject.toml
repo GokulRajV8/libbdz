@@ -1,0 +1,18 @@
+[build-system]
+    requires = ["setuptools"]
+    build-backend = "setuptools.build_meta"
+
+[project]
+    name = "libbdz"
+    version = "1.0"
+    description = "Library for simple local activities"
+    authors = [
+        { name = "Gokul Raj", email = "gokulraj059@gmail.com" },
+    ]
+    readme = "README.md"
+    license = { file = "LICENSE" }
+
+    requires-python = ">= 3.12"
+    dependencies = [
+        "pillow"
+    ]
