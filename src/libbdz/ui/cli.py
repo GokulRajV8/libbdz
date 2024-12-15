@@ -27,3 +27,39 @@ def cprint_list(input: list[str]):
 
 def cinput(prompt: str) -> str:
     return input("\n" + __get_colored_string(prompt, 1))
+
+
+def cmenu(menu_name: str, menu_list: list[str], menu_executables: list):
+    while True:
+        print(
+            "\n"
+            + "    "
+            + __get_colored_string(menu_name, 3)
+            + "\n"
+            + "    "
+            + __get_colored_string("=" * len(menu_name), 3)
+            + "\n"
+        )
+
+        count = 1
+        for menu in menu_list:
+            print("    " + __get_colored_string(str(count) + ". " + menu, 3))
+            count += 1
+
+        try:
+            option = int(cinput("Enter your option (Ctrl-C to quit at any moment) : "))
+        except KeyboardInterrupt:
+            print()
+            break
+        except ValueError:
+            cprint("Invalid option")
+            continue
+
+        if option > len(menu_list):
+            cprint("Invalid option")
+        else:
+            try:
+                menu_executables[option - 1]()
+            except KeyboardInterrupt:
+                print()
+                cprint("Keyboard interrupt occured")
