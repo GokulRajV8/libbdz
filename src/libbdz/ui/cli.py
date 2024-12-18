@@ -2,48 +2,37 @@
 Generate CLI based elements
 """
 
+from rich import console
+from rich import markdown
 
-def __get_colored_string(input: str, color_code: int) -> str:
-    match color_code:
-        case 1:
-            return f"\033[92m{input}\033[0m"
-        case 2:
-            return f"\033[93m{input}\033[0m"
-        case 3:
-            return f"\033[96m{input}\033[0m"
-        case _:
-            return input
+__console = console.Console()
+
+
+def cinput(prompt: str) -> str:
+    input_val = __console.input("[bold green]" + prompt + "[/]")
+    return input_val
 
 
 def cprint(message: str):
-    print("\n" + __get_colored_string(message, 2))
+    __console.print(message, style="yellow")
 
 
 def cprint_list(input: list[str]):
     print()
     for item in input:
-        print("    " + "\u2022 " + __get_colored_string(item, 3))
+        __console.print("    " + "\u2022 " + item, style="cyan")
 
 
-def cinput(prompt: str) -> str:
-    return input("\n" + __get_colored_string(prompt, 1))
-
-
-def cmenu(menu_name: str, menu_list: list[str], menu_executables: list):
+def cprint_menu(menu_name: str, menu_list: list[str], menu_executables: list):
     while True:
-        print(
-            "\n"
-            + "    "
-            + __get_colored_string(menu_name, 3)
-            + "\n"
-            + "    "
-            + __get_colored_string("=" * len(menu_name), 3)
-            + "\n"
+        __console.print(
+            "\n" + "    " + menu_name + "\n" + "    " + "=" * len(menu_name) + "\n",
+            style="cyan",
         )
 
         count = 1
         for menu in menu_list:
-            print("    " + __get_colored_string(str(count) + ". " + menu, 3))
+            __console.print("    " + str(count) + ". " + menu, style="cyan")
             count += 1
 
         try:
@@ -63,3 +52,8 @@ def cmenu(menu_name: str, menu_list: list[str], menu_executables: list):
             except KeyboardInterrupt:
                 print()
                 cprint("Keyboard interrupt occured")
+
+
+def cprint_md(content: str):
+    md_content = markdown.Markdown(content)
+    __console.print(md_content)
