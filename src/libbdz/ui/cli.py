@@ -4,8 +4,8 @@ Generate CLI based elements
 
 from rich import console
 from rich import live
-from rich import markdown
 from rich import spinner
+from rich import table
 
 _console = console.Console()
 
@@ -56,9 +56,20 @@ def cprint_menu(menu_name: str, menu_list: list[str], menu_executables: list):
                 cprint("Keyboard interrupt occured")
 
 
-def cprint_md(content: str):
-    md_content = markdown.Markdown(content)
-    _console.print(md_content)
+def cprint_table(
+    title: str, headings: list[str], rows: list[list[str]], cell_alignment: list[str]
+):
+    column_count = len(headings)
+    table_to_display = table.Table(title=title)
+    for i in range(column_count):
+        table_to_display.add_column(
+            headings[i], justify="left" if cell_alignment[i] == "l" else "right"
+        )
+
+    for row in rows:
+        table_to_display.add_row(*row)
+
+    _console.print(table_to_display)
 
 
 class LiveStatusUpdate:
