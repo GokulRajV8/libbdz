@@ -29,7 +29,11 @@ def __get_final_dimensions(
 
 
 def __stitch_images(
-    images: list[ImageFile.ImageFile], width: int, height: int, is_vertical: bool
+    status_updater,
+    images: list[ImageFile.ImageFile],
+    width: int,
+    height: int,
+    is_vertical: bool,
 ) -> Image.Image:
     final = Image.new("RGB", (width, height), color=(0, 0, 0))
     pos = 0
@@ -38,15 +42,18 @@ def __stitch_images(
             temp = image.resize((width, int(width / image.size[0] * image.size[1])))
             final.paste(temp, (0, pos))
             pos += int(width / image.size[0] * image.size[1])
+            status_updater.update()
     else:
         for image in images:
             temp = image.resize((int(height / image.size[1] * image.size[0]), height))
             final.paste(temp, (pos, 0))
             pos += int(height / image.size[1] * image.size[0])
+            status_updater.update()
     return final
 
 
 def process(
+    status_updater,
     src_images: list[str],
     dst_dir: str,
     dst_image: str,
@@ -55,11 +62,14 @@ def process(
     quality: int = 100,
 ):
     # loading images
-    images = [Image.open(src_image) for src_image in src_images]
+    images = []
+    for src_image in src_images:
+        images.append(Image.open(src_image))
+        status_updater.update()
 
     # stitching images
     width, height = __get_final_dimensions(images, is_vertical)
-    final_image = __stitch_images(images, width, height, is_vertical)
+    final_image = __stitch_images(status_updater, images, width, height, is_vertical)
 
     # writing final image
     if is_jpg:
@@ -70,3 +80,4 @@ def process(
         final_image.save(
             os.path.join(dst_dir, dst_image) + ".png", format="PNG", quality=quality
         )
+    status_updater.update()
