@@ -87,7 +87,7 @@ def cprint_table(
 
 class LiveStatusUpdate:
     def __init__(self, states: list[str]):
-        self.__states = states
+        self.__states = [_get_colored_text(state, 4) for state in states]
         self.__count = 0
         self.__spinner = spinner.Spinner("dots", text=self.__states[self.__count])
         self.__live = live.Live(self.__spinner, console=_console, transient=True)
