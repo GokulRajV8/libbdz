@@ -19,28 +19,15 @@ def cprint(message: str):
     _console.print(message, style="yellow")
 
 
-def cprint_list(input: list[str]):
-    print()
-    for item in input:
-        _console.print("    " + "\u2022 " + item, style="cyan")
-
-
 def cprint_menu(menu_name: str, menu_list: list[str], menu_executables: list):
     while True:
-        _console.print(
-            "\n" + "    " + menu_name + "\n" + "    " + "=" * len(menu_name) + "\n",
-            style="cyan",
-        )
-
-        count = 1
-        for menu in menu_list:
-            _console.print("    " + str(count) + ". " + menu, style="cyan")
-            count += 1
+        _console.print(menu_name, style="cyan")
+        for id, menu in enumerate(menu_list, start=1):
+            _console.print(str(id) + ". " + menu, style="cyan")
 
         try:
             option = int(cinput("Enter your option (Ctrl-C to quit at any moment) : "))
         except KeyboardInterrupt:
-            print()
             break
         except ValueError:
             cprint("Invalid option")
@@ -52,7 +39,6 @@ def cprint_menu(menu_name: str, menu_list: list[str], menu_executables: list):
             try:
                 menu_executables[option - 1]()
             except KeyboardInterrupt:
-                print()
                 cprint("Keyboard interrupt occured")
 
 
